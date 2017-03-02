@@ -8,10 +8,11 @@ document.addEventListener('DOMContentLoaded', () => {
   context.globalAlpha=0.8;
 
   // sets up board variables
-  var board = [];
-  var game = {
+  let board = [];
+  let game = {
     rows: 50,
     columns: 50,
+    margin: 1,
     speed: 300,
     density: 1.2,
     pxWide: canvas.width,
@@ -32,38 +33,31 @@ document.addEventListener('DOMContentLoaded', () => {
   //   return (window.devicePixelRatio || 1) / backingStore;
   // };
 
-  const dotMargin = 1;
-  const numRows = game.rows;
-  const numCols = game.columns;
-
-  const canvasWidth = canvas.width // / getPixelRatio(context);
-  const canvasHeight = canvas.height // / getPixelRatio(context);
-
-// // implementation of offscreen canvas is still shaky, but would speed up performance
+// // implementation of offscreen canvas is still shaky, but might speed up performance
 // board.offscreenCanvas = document.createElement("canvas");
-// board.offscreenCanvas.width = canvasHeight;
-// board.offscreenCanvas.height = canvasWidth;
+// board.offscreenCanvas.width = game.pxHigh;
+// board.offscreenCanvas.height = game.pxWide;
 // board.offscreenContext = board.offscreenCanvas.getContext("2d");
 
   // adapted from http://cobwwweb.com/mutlicolored-dotted-grid-canvas
   // Because we don't know which direction (x vs. y) is the limiting sizing
   // factor, we'll calculate both first.
-  const dotWidth = ((canvasWidth - (2 * dotMargin)) / numCols) - dotMargin;
-  const dotHeight = ((canvasHeight - (2 * dotMargin)) / numRows) - dotMargin;
+  const dotWidth = ((game.pxWide - (2 * game.margin)) / game.columns) - game.margin;
+  const dotHeight = ((game.pxHigh - (2 * game.margin)) / game.rows) - game.margin;
   // Now, we use the limiting dimension to set the diameter.
   if( dotWidth > dotHeight )
   {
     var dotDiameter = dotHeight;
-    var xMargin = (canvasWidth - ((2 * dotMargin) + (numCols * dotDiameter))) / numCols;
-    var yMargin = dotMargin;
+    var xMargin = (game.pxWide - ((2 * game.margin) + (game.columns * dotDiameter))) / game.columns;
+    var yMargin = game.margin;
   }
   else
   { var dotDiameter = dotWidth;
-    var xMargin = dotMargin;
-    var yMargin = (canvasHeight - ((2 * dotMargin) + (numRows * dotDiameter))) / numRows;
+    var xMargin = game.margin;
+    var yMargin = (game.pxHigh - ((2 * game.margin) + (game.rows * dotDiameter))) / game.rows;
   }
   // Radius is still half of the diameter, because ... math.
-  var dotRadius = Math.abs(dotDiameter) * 0.5;
+  const dotRadius = Math.abs(dotDiameter) * 0.5;
 
 
 
@@ -77,7 +71,6 @@ document.addEventListener('DOMContentLoaded', () => {
    for (var row = 0; row < game.rows; row++) {
     for (var column = 0; column < game.columns; column++) {
       var randNum = Math.floor(Math.random()*game.density);
-      // var randNum = 1; //for testing
       board[row].push(randNum);
     }
   }
@@ -99,10 +92,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // sums up and returns all the neighbors values in the array
   // checks to see if the neighbor position is out of bounds
   function neighborSum (x, y)  {
-    var sum = 0;
+    let sum = 0;
     xBound = game.columns - 1;
     yBound = game.rows - 1;
-    var b = board;
+    let b = board;
 
     if ((x === 0) && (y === 0)){
       sum =  b[x+1][y+1]+ b[x+1][y] + b[x][y+1];
@@ -129,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function lifeGen() {
       context.fillStyle = game.background;
-      context.fillRect( 0, 0, canvasWidth, canvasHeight)
+      context.fillRect( 0, 0, game.pxWide, game.pxHigh)
       context.fillStyle = game.cellColor;
       x = 0;
       y = -1;
@@ -146,8 +139,8 @@ document.addEventListener('DOMContentLoaded', () => {
          var neighbors = neighborSum (y, x);
          var state = null;
          // calculates the dot positioning
-          var xPos = (x * (dotDiameter + xMargin)) + dotMargin + (xMargin / 2) + dotRadius;
-          var yPos = (y * (dotDiameter + yMargin)) + dotMargin + (yMargin / 2) + dotRadius;
+          var xPos = (x * (dotDiameter + xMargin)) + game.margin + (xMargin / 2) + dotRadius;
+          var yPos = (y * (dotDiameter + yMargin)) + game.margin + (yMargin / 2) + dotRadius;
           // Basic rules of the Game of Life:
           // If the cell is alive, then it stays alive only if it has  2 or 3 live neighbors.
           if ((cellVal === 1) && (( neighbors <= 3 ) && (neighbors >= 2))) {
@@ -168,18 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // board.render(board.offscreenContext);
     }
 
-  // // pixel ratio adjuster via https://github.com/jondavidjohn/hidpi-canvas-polyfill
-  // var getPixelRatio = function(context) {
-  //   var backingStore = context.backingStorePixelRatio ||
-  //         context.webkitBackingStorePixelRatio ||
-  //         context.mozBackingStorePixelRatio ||
-  //         context.msBackingStorePixelRatio ||
-  //         context.oBackingStorePixelRatio ||
-  //         context.backingStorePixelRatio || 1;
-  //   return (window.devicePixelRatio || 1) / backingStore;
-  // };
-
-  // draws each 'dot' - currently changed to a rectangle.
+  // draws each 'dot' - currently in the shape of a rectangle.
   function drawDot(x, y, radius, color) {
     context.fillRect(x, y, radius*2, radius*2);
     // context.beginPath();
@@ -188,6 +170,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
  initBoard();
- var gameOfLife = setInterval(lifeGen, game.speed);
+ let gameOfLife = setInterval(lifeGen, game.speed);
 
 });
