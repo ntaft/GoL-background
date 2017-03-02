@@ -1,0 +1,19 @@
+{
+  "name": "gol-bg",
+  "version": "1.0.0",
+  "description": "conway's game of life visualization in canvas",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ntaft/gol-bg.git"
+  },
+  "author": "Nick Taft",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ntaft/gol-bg/issues"
+  },
+  "homepage": "https://github.com/ntaft/gol-bg#readme"
+}
