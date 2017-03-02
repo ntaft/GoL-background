@@ -4,7 +4,8 @@
   "description": "conway's game of life visualization in canvas",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,10 @@
   "bugs": {
     "url": "https://github.com/ntaft/gol-bg/issues"
   },
-  "homepage": "https://github.com/ntaft/gol-bg#readme"
+  "homepage": "https://github.com/ntaft/gol-bg#readme",
+  "dependencies": {
+    "express": "^4.15.0",
+    "morgan": "^1.8.1",
+    "path": "^0.12.7"
+  }
 }
