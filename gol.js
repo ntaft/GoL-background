@@ -21,18 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
     background: 'rgb(250, 250, 250)',
   };
 
-  // // pixel ratio adjuster via https://github.com/jondavidjohn/hidpi-canvas-polyfill
-  // var getPixelRatio = function(context) {
-  //   var backingStore = context.backingStorePixelRatio ||
-  //         context.webkitBackingStorePixelRatio ||
-  //         context.mozBackingStorePixelRatio ||
-  //         context.msBackingStorePixelRatio ||
-  //         context.oBackingStorePixelRatio ||
-  //         context.backingStorePixelRatio || 1;
-
-  //   return (window.devicePixelRatio || 1) / backingStore;
-  // };
-
 // // implementation of offscreen canvas is still shaky, but might speed up performance
 // board.offscreenCanvas = document.createElement("canvas");
 // board.offscreenCanvas.width = game.pxHigh;
@@ -63,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // initializes a new board, and randomly seeds it with new 'life' i.e. red squares / 1's
   function initBoard () {
-
+    board = [];
    for (var r=0; r < game.rows; r++) {
         board.push([]);
    };
@@ -122,6 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function lifeGen() {
       context.fillStyle = game.background;
+      // clears the board with an overlay
       context.fillRect( 0, 0, game.pxWide, game.pxHigh)
       context.fillStyle = game.cellColor;
       x = 0;
@@ -141,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
          // calculates the dot positioning
           var xPos = (x * (dotDiameter + xMargin)) + game.margin + (xMargin / 2) + dotRadius;
           var yPos = (y * (dotDiameter + yMargin)) + game.margin + (yMargin / 2) + dotRadius;
-          // Basic rules of the Game of Life:
+          // Basic rules of Conway's Game of Life:
           // If the cell is alive, then it stays alive only if it has  2 or 3 live neighbors.
           if ((cellVal === 1) && (( neighbors <= 3 ) && (neighbors >= 2))) {
            state = 1;
@@ -152,7 +141,6 @@ document.addEventListener('DOMContentLoaded', () => {
             drawDot(xPos, yPos, dotRadius);
          } else {
            state = 0;
-           // context.clearRect( xPos, yPos, dotRadius*2, dotRadius*2);
          };
          x++;
          return state;
@@ -169,7 +157,31 @@ document.addEventListener('DOMContentLoaded', () => {
     // context.fill();
   }
 
- initBoard();
- let gameOfLife = setInterval(lifeGen, game.speed);
+  // button handlers
+  document.querySelector('.pause').addEventListener('click', pauseHandler);
+  document.querySelector('.reset').addEventListener('click', resetHandler);
+
+  // pauses the animation on click
+  function pauseHandler() {
+    if (gameOfLife) {
+      clearInterval(gameOfLife);
+      gameOfLife = null;
+    }
+    else {
+      gameOfLife = setInterval(lifeGen, game.speed);
+    }
+  }
+
+  function resetHandler() {
+    clearInterval(gameOfLife);
+    context.fillStyle = game.background;
+    context.fillRect( 0, 0, game.pxWide, game.pxHigh);
+    initBoard();
+    if (gameOfLife) gameOfLife = setInterval(lifeGen, game.speed);
+    else lifeGen();
+  }
+
+  initBoard();
+  let gameOfLife = setInterval(lifeGen, game.speed);
 
 });
