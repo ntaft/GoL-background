@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     rows: 50,
     columns: 50,
     margin: 1,
-    speed: 300,
+    speed: 200,
     density: 1.2,
     pxWide: canvas.width,
     pxHigh: canvas.height,
@@ -162,7 +162,8 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelector('.reset').addEventListener('click', resetHandler);
 
   // pauses the animation on click
-  function pauseHandler() {
+  function pauseHandler(e) {
+    stopPropigation(e);
     if (gameOfLife) {
       clearInterval(gameOfLife);
       gameOfLife = null;
@@ -172,13 +173,45 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function resetHandler() {
+  function resetHandler(e) {
+    stopPropigation(e);
     clearInterval(gameOfLife);
     context.fillStyle = game.background;
     context.fillRect( 0, 0, game.pxWide, game.pxHigh);
     initBoard();
     if (gameOfLife) gameOfLife = setInterval(lifeGen, game.speed);
     else lifeGen();
+  }
+
+  // event listeners for edit functionality
+  document.addEventListener('mousedown', toggleCell)
+  document.addEventListener('mouseup', () => document.removeEventListener('mousemove', dragCell));
+
+  class cell {
+    constructor(e) {
+      this.x = Math.floor((e.clientX / (dotDiameter + xMargin)) + game.margin + (xMargin / 2) - xMargin);
+      this.y = Math.floor((e.clientY / (dotDiameter + yMargin)) + game.margin + (yMargin / 2) - game.margin);
+    }
+    get state() {
+      return board[this.x, this.y]
+    }
+    set state(val) {
+      board[this.x, this.y] = val;
+    }
+  }
+
+  function toggleCell(e) {
+    let mousePos = new cell(e);
+    console.log(mousePos.x, mousePos.y, mousePos.state);
+    document.addEventListener('mousemove', dragCell);
+    console.log(e);
+  }
+
+  function dragCell(e){
+    const cellPos = {
+      x: Math.floor(e.clientX / dotWidth),
+      y: Math.floor(e.clientY / dotHeight),
+    }
   }
 
   initBoard();
