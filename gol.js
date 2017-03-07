@@ -26,11 +26,10 @@ document.addEventListener('DOMContentLoaded', () => {
   let dot = {
     width: ((game.pxWide - (2 * game.margin)) / game.columns) - game.margin,
     height: ((game.pxHigh - (2 * game.margin)) / game.rows) - game.margin,
-    isWider: this.width > this.height,
-    diameter: this.isWider ? this.height : this.width,
-    xMargin: this.isWider ? (game.pxWide - ((2 * game.margin) + (game.columns * this.diameter))) / game.columns : game.margin,
-    yMargin: !(this.isWider) ? (game.pxHigh - ((2 * game.margin) + (game.rows * this.diameter))) / game.rows : game.margin,
-    radius: Math.abs(this.diameter) * 0.5,
+    // diameter: this.isWider ? this.height : this.width,
+    // xMargin: this.isWider ? (game.pxWide - ((2 * game.margin) + (game.columns * this.diameter))) / game.columns : game.margin,
+    // yMargin: !(this.isWider) ? (game.pxHigh - ((2 * game.margin) + (game.rows * this.diameter))) / game.rows : game.margin,
+    // radius: Math.abs(this.diameter) * 0.5,
   };
 
 // // implementation of offscreen canvas is still shaky, but might speed up performance...
@@ -42,8 +41,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // adapted from http://cobwwweb.com/mutlicolored-dotted-grid-canvas
   // Because we don't know which direction (x vs. y) is the limiting sizing
   // factor, we'll calculate both first.
-  dot.width = ((game.pxWide - (2 * game.margin)) / game.columns) - game.margin;
-  dot.height = ((game.pxHigh - (2 * game.margin)) / game.rows) - game.margin;
+  // dot.width = ((game.pxWide - (2 * game.margin)) / game.columns) - game.margin;
+  // dot.height = ((game.pxHigh - (2 * game.margin)) / game.rows) - game.margin;
   // Uses the limiting dimension to set the diameter.
   if( dot.width > dot.height )
   {
