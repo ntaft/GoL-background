@@ -13,15 +13,27 @@ document.addEventListener('DOMContentLoaded', () => {
     rows: 50,
     columns: 50,
     margin: 1,
-    speed: 200,
+    speed: 200, // in ms per gen
     density: 1.2,
     pxWide: canvas.width,
     pxHigh: canvas.height,
     cellColor: '#FF4136',
     background: 'rgb(250, 250, 250)',
+    generations: 0,
+  };
+  // variables for onscreen dot
+  // adapted from http://cobwwweb.com/mutlicolored-dotted-grid-canvas
+  let dot = {
+    width: ((game.pxWide - (2 * game.margin)) / game.columns) - game.margin,
+    height: ((game.pxHigh - (2 * game.margin)) / game.rows) - game.margin,
+    isWider: this.width > this.height,
+    diameter: this.isWider ? this.height : this.width,
+    xMargin: this.isWider ? (game.pxWide - ((2 * game.margin) + (game.columns * this.diameter))) / game.columns : game.margin,
+    yMargin: !(this.isWider) ? (game.pxHigh - ((2 * game.margin) + (game.rows * this.diameter))) / game.rows : game.margin,
+    radius: Math.abs(this.diameter) * 0.5,
   };
 
-// // implementation of offscreen canvas is still shaky, but might speed up performance
+// // implementation of offscreen canvas is still shaky, but might speed up performance...
 // board.offscreenCanvas = document.createElement("canvas");
 // board.offscreenCanvas.width = game.pxHigh;
 // board.offscreenCanvas.height = game.pxWide;
@@ -30,27 +42,28 @@ document.addEventListener('DOMContentLoaded', () => {
   // adapted from http://cobwwweb.com/mutlicolored-dotted-grid-canvas
   // Because we don't know which direction (x vs. y) is the limiting sizing
   // factor, we'll calculate both first.
-  const dotWidth = ((game.pxWide - (2 * game.margin)) / game.columns) - game.margin;
-  const dotHeight = ((game.pxHigh - (2 * game.margin)) / game.rows) - game.margin;
-  // Now, we use the limiting dimension to set the diameter.
-  if( dotWidth > dotHeight )
+  dot.width = ((game.pxWide - (2 * game.margin)) / game.columns) - game.margin;
+  dot.height = ((game.pxHigh - (2 * game.margin)) / game.rows) - game.margin;
+  // Uses the limiting dimension to set the diameter.
+  if( dot.width > dot.height )
   {
-    var dotDiameter = dotHeight;
-    var xMargin = (game.pxWide - ((2 * game.margin) + (game.columns * dotDiameter))) / game.columns;
-    var yMargin = game.margin;
+    dot.diameter = dot.height;
+    dot.xMargin = (game.pxWide - ((2 * game.margin) + (game.columns * dot.diameter))) / game.columns;
+    dot.yMargin = game.margin;
   }
   else
-  { var dotDiameter = dotWidth;
-    var xMargin = game.margin;
-    var yMargin = (game.pxHigh - ((2 * game.margin) + (game.rows * dotDiameter))) / game.rows;
+  { dot.diameter = dot.width;
+    dot.xMargin = game.margin;
+    dot.yMargin = (game.pxHigh - ((2 * game.margin) + (game.rows * dot.diameter))) / game.rows;
   }
   // Radius is still half of the diameter, because ... math.
-  const dotRadius = Math.abs(dotDiameter) * 0.5;
+  dot.radius = Math.abs(dot.diameter) * 0.5;
 
 
 
   // initializes a new board, and randomly seeds it with new 'life' i.e. red squares / 1's
   function initBoard () {
+    game.generations = 0;
     board = [];
    for (var r=0; r < game.rows; r++) {
         board.push([]);
@@ -65,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
 }
 
   // creates and returns an array full of 0's
-  function clearBoard() {
+  function zeroBoard() {
     board = [];
   for (var r=0; r < game.rows; r++) {
         board.push([]);
@@ -109,9 +122,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
     function lifeGen() {
-      context.fillStyle = game.background;
-      // clears the board with an overlay
-      context.fillRect( 0, 0, game.pxWide, game.pxHigh)
+      console.log(board);
+      clearDots();
+      game.generations += 1;
       context.fillStyle = game.cellColor;
       let x = 0,
           y = -1,
@@ -130,14 +143,14 @@ document.addEventListener('DOMContentLoaded', () => {
           // Basic rules of Conway's Game of Life:
           // If the cell is alive, then it stays alive only if it has  2 or 3 live neighbors.
           if ((cellVal === 1) && (( neighbors <= 3 ) && (neighbors >= 2))) {
-           state = 1;
-           drawDot(x, y, dotRadius);
+            state = 1;
+            drawDot(x, y, dot.radius);
          // If the cell is dead, then it becomes alive only if it has 3 live neighbors.
          } else if ((cellVal === 0) && (neighbors === 3)) {
-           state = 1;
-            drawDot(x, y, dotRadius);
+            state = 1;
+            drawDot(x, y, dot.radius);
          } else {
-           state = 0;
+            state = 0;
          };
          x++;
          return state;
@@ -149,12 +162,17 @@ document.addEventListener('DOMContentLoaded', () => {
   // draws each 'dot' - currently in the shape of a rectangle.
   function drawDot(x, y, radius, color) {
     // calculates the dot positioning based on the px margin, px diameter and board position
-    const xPos = (x * (dotDiameter + xMargin)) + game.margin + (xMargin / 2) + dotRadius;
-    const yPos = (y * (dotDiameter + yMargin)) + game.margin + (yMargin / 2) + dotRadius;
+    const xPos = (x * (dot.diameter + dot.xMargin)) + game.margin + (dot.xMargin / 2) + dot.radius;
+    const yPos = (y * (dot.diameter + dot.yMargin)) + game.margin + (dot.yMargin / 2) + dot.radius;
     context.fillRect(xPos, yPos, radius*2, radius*2);
     // context.beginPath();
     // context.arc(x, y, radius, 0, 2 * Math.PI, false);
     // context.fill();
+  }
+  // overlays the board with a blank rectangle
+  function clearDots() {
+    context.fillStyle = game.background;
+    context.fillRect( 0, 0, game.pxWide, game.pxHigh);
   }
 
   // button handlers
@@ -162,10 +180,13 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelector('.reset').addEventListener('click', resetHandler);
   document.querySelector('.clear').addEventListener('click', clearHandler);
 
-  // pauses the animation on click
+  // event listeners for edit functionality
+  document.addEventListener('mousedown', toggleCell)
+  document.addEventListener('mouseup', () => document.removeEventListener('mousemove', dragCell));
+
+  // pauses / unpauses the animation on click
   function pauseHandler(e) {
     e.stopPropagation();
-    e.preventDefault();
     if (gameOfLife) {
       clearInterval(gameOfLife);
       gameOfLife = null;
@@ -175,42 +196,35 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // resets the board to default state
   function resetHandler(e) {
     e.stopPropagation();
-    e.preventDefault();
     clearInterval(gameOfLife);
-    context.fillStyle = game.background;
-    context.fillRect( 0, 0, game.pxWide, game.pxHigh);
+    clearDots()
     initBoard();
     if (gameOfLife) gameOfLife = setInterval(lifeGen, game.speed);
     else lifeGen();
   }
 
+  // zeroes out the board to a blank state
   function clearHandler(e) {
     e.stopPropagation();
-    e.preventDefault();
-    clearBoard();
-    context.fillStyle = game.background;
-    context.fillRect( 0, 0, game.pxWide, game.pxHigh);
+    zeroBoard();
+    clearDots();
   }
 
-  // event listeners for edit functionality
-  document.addEventListener('mousedown', toggleCell)
-  document.addEventListener('mouseup', () => document.removeEventListener('mousemove', dragCell));
-
   // helper class that gets/sets the cell state and draws to canvas given the px coordinates
-  class cell {
+  class Cell {
     constructor(xPos, yPos) {
-      // converts the screen position to the 2d grid position
-      this.x = Math.floor((xPos / (dotDiameter + xMargin)) + game.margin + (xMargin / 2) - xMargin) - 1;
-      this.y = Math.floor((yPos / (dotDiameter + yMargin)) + game.margin + (yMargin / 2) - yMargin) - 1;
+      // converts the on screen position to the 2d array position
+      this.x = Math.floor((xPos / (dot.diameter + dot.xMargin)) + game.margin - (dot.xMargin / 2)) - 1;
+      this.y = Math.floor((yPos / (dot.diameter + dot.yMargin)) + game.margin - (dot.yMargin / 2)) - 1;
     }
-    // getter and setter for the cell state
+    // getter and setter for the cell state, 0 or 1
     get state() {
       return board[this.y][this.x]
     }
     set state(val) {
-      console.log(val);
       board[this.y][this.x] = val;
     }
     // flips the cell bit to the designated state and draws to canvas
@@ -218,25 +232,28 @@ document.addEventListener('DOMContentLoaded', () => {
       if (this.state != bit) {
         this.state = bit;
         context.fillStyle = bit ? game.cellColor: game.background
-        drawDot(this.x, this.y, dotRadius)
+        drawDot(this.x, this.y, dot.radius)
       }
     }
   }
 
+  // toggles the cell state on click; shift removes cells
   function toggleCell(e) {
-    let mousePos = new cell(e.clientX, e.clientY);
+    let mousePos = new Cell(e.clientX, e.clientY);
     e.shiftKey ? mousePos.draw(0) : mousePos.draw(1)
     document.addEventListener('mousemove', dragCell);
   }
 
+  // toggles cell state on click and drag
   function dragCell(e){
     console.log(e);
     if ((0 < e.clientX && e.clientX < game.pxWide) && (0 < e.clientY && e.clientY < game.pxHigh)) {
-      let dragPos = new cell(e.clientX, e.clientY);
+      let dragPos = new Cell(e.clientX, e.clientY);
       e.shiftKey ? dragPos.draw(0) : dragPos.draw(1)
     }
   }
 
+  // sets the initial board state and speed
   initBoard();
   let gameOfLife = setInterval(lifeGen, game.speed);
 
