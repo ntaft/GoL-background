@@ -198,7 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('mousedown', toggleCell)
   document.addEventListener('mouseup', () => document.removeEventListener('mousemove', dragCell));
 
-  // helper class that sets/gets the position and state of a cell given a location event
+  // helper class that gets/sets the cell state and draws to canvas given the px coordinates
   class cell {
     constructor(xPos, yPos) {
       // converts the screen position to the 2d grid position
@@ -213,9 +213,11 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log(val);
       board[this.y][this.x] = val;
     }
+    // flips the cell bit to the designated state and draws to canvas
     draw(bit) {
       if (this.state != bit) {
-        context.fillStyle = this.state ? game.background : game.cellColor
+        this.state = bit;
+        context.fillStyle = bit ? game.cellColor: game.background
         drawDot(this.x, this.y, dotRadius)
       }
     }
@@ -228,8 +230,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function dragCell(e){
-    let dragPos = new cell(e.clientX, e.clientY);
-    e.shiftKey ? dragPos.draw(0) : dragPos.draw(1)
+    console.log(e);
+    if ((0 < e.clientX && e.clientX < game.pxWide) && (0 < e.clientY && e.clientY < game.pxHigh)) {
+      let dragPos = new cell(e.clientX, e.clientY);
+      e.shiftKey ? dragPos.draw(0) : dragPos.draw(1)
+    }
   }
 
   initBoard();
