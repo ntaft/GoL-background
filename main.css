@@ -30,7 +30,7 @@ button {
   height: 30px;
   width: 30px;
   border-style: none;
-  border-radius: 100%;
+  /*border-radius: 100%;*/
   background: none;
   background-repeat: no-repeat;
   background-position: center;
@@ -46,11 +46,15 @@ button:not(.settings):hover {
 }
 
 .settings {
-  background-image: url('assets/gear.svg');
+  background-image: url('assets/settings.svg');
 }
 
 .pause {
   background-image: url('assets/pause.svg');
+}
+
+.step {
+  background-image: url('assets/next.svg');
 }
 
 .reset {

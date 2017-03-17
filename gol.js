@@ -124,6 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function lifeGen() {
       clearDots();
       game.generations += 1;
+      document.querySelector('.gen').innerHTML = game.generations
       context.fillStyle = game.cellColor;
       let x = 0,
           y = -1,
@@ -175,6 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // button handlers
   document.querySelector('.pause').addEventListener('click', pauseHandler);
+  document.querySelector('.step').addEventListener('click', stepHandler);
   document.querySelector('.reset').addEventListener('click', resetHandler);
   document.querySelector('.clear').addEventListener('click', clearHandler);
 
@@ -195,6 +197,16 @@ document.addEventListener('DOMContentLoaded', () => {
       gameOfLife = setInterval(lifeGen, game.speed);
       button.style.backgroundImage = 'url("assets/pause.svg")'
     }
+  }
+
+  function stepHandler(e) {
+    e.stopPropagation();
+    if (gameOfLife) {
+      clearInterval(gameOfLife);
+      gameOfLife = null;
+      document.querySelector('.pause').style.backgroundImage = 'url("assets/play.svg")'
+    }
+    lifeGen();
   }
 
   // resets the board to default state
