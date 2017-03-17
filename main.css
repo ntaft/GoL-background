@@ -3,16 +3,65 @@ html, body {
   width: 100%;
   margin: 0;
   padding: 0;
+  cursor: cell;
 }
 
 .control-box {
   position: fixed;
-  height: 80px;
-  width: 120px;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgb(0, 172, 237);
+  transition: width .4s ease;
+  width: 50px;
+  height: 50px;
+  overflow: hidden;
+}
+
+.control-box:hover {
+  width: 400px;
 }
 
 .board {
   margin: 0;
   padding: 0;
 }
+
+button {
+  height: 30px;
+  width: 30px;
+  border-style: none;
+  border-radius: 100%;
+  background: none;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  display: inline-block;
+  margin: 10px 0 10px 10px;
+  transition: opacity .4s ease;
+  opacity: .8;
+}
+
+button:hover {
+  opacity: .6;
+}
+
+.settings {
+  background-image: url('assets/gear.svg');
+}
+
+.pause {
+  background-image: url('assets/pause.svg');
+}
+
+.reset {
+  background-image: url('assets/reset.svg');
+}
+
+.clear {
+  background-image: url('assets/clear.svg');
+}
+
+.directions {
+  display: inline-block;
+  margin: 0 0 0 10px;
+  width: 200px;
+}
+

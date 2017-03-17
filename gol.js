@@ -121,7 +121,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
     function lifeGen() {
-      console.log(board);
       clearDots();
       game.generations += 1;
       context.fillStyle = game.cellColor;
@@ -185,13 +184,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // pauses / unpauses the animation on click
   function pauseHandler(e) {
+    let button = document.querySelector('.pause')
     e.stopPropagation();
     if (gameOfLife) {
       clearInterval(gameOfLife);
       gameOfLife = null;
+      button.style.backgroundImage = 'url("assets/play.svg")'
     }
     else {
       gameOfLife = setInterval(lifeGen, game.speed);
+      button.style.backgroundImage = 'url("assets/pause.svg")'
     }
   }
 
@@ -216,8 +218,8 @@ document.addEventListener('DOMContentLoaded', () => {
   class Cell {
     constructor(xPos, yPos) {
       // converts the on screen position to the 2d array position
-      this.x = Math.floor((xPos / (dot.diameter + dot.xMargin)) + game.margin - (dot.xMargin / 2)) - 1;
-      this.y = Math.floor((yPos / (dot.diameter + dot.yMargin)) + game.margin - (dot.yMargin / 2)) - 1;
+      this.x = Math.floor((xPos / (dot.diameter + dot.xMargin)) - (dot.xMargin / 2));
+      this.y = Math.floor((yPos / (dot.diameter + dot.yMargin)) - (dot.yMargin / 2));
     }
     // getter and setter for the cell state, 0 or 1
     get state() {
@@ -245,7 +247,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // toggles cell state on click and drag
   function dragCell(e){
-    console.log(e);
     if ((0 < e.clientX && e.clientX < game.pxWide) && (0 < e.clientY && e.clientY < game.pxHigh)) {
       let dragPos = new Cell(e.clientX, e.clientY);
       e.shiftKey ? dragPos.draw(0) : dragPos.draw(1)
