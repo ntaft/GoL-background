@@ -9,16 +9,33 @@ html, body {
 .control-box {
   position: fixed;
   background: rgb(175, 189, 212);
-  transition: width .4s ease;
   width: 50px;
   height: 50px;
   overflow: hidden;
   opacity: .7;
+  padding: 0;
+  margin: 0;
 }
 
 .control-box:hover {
-  width: 400px;
-  opacity: 1;
+  animation: expand .8s forwards;
+}
+
+@keyframes expand {
+  0% {
+    width: 50px;
+    opacity: 0.7;
+  }
+  60% {
+    width: 300px;
+    padding: 0;
+    opacity: 1;
+  }
+  100% {
+    width: 300px;
+    padding: 0 0 50px 0;
+    opacity: 1;
+  }
 }
 
 .board {
@@ -65,9 +82,41 @@ button:not(.settings):hover {
   background-image: url('assets/clear.svg');
 }
 
-.directions {
-  display: inline-block;
-  margin: 0 0 0 10px;
-  width: 200px;
+.question {
+  background-image: url('assets/question.svg');
 }
+
+
+.info {
+  height: 50px;
+  background: #dfe3ee;
+  overflow: hidden;
+  margin: 0;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+}
+
+.info > p {
+  padding: 3px 10px 3px 10px;
+  margin: 0;
+  font-size: .75em;
+}
+
+.gen-box {
+  position: relative;
+  top: -3px;
+  right: -3px;
+  margin: 0;
+}
+
+.gen-box, .gen{
+  font-size: .8em;
+  display: inline-block;
+  text-align: center;
+  padding: 3px;
+  background: rgba(255, 255, 255, .1);
+}
+
+
 

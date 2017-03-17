@@ -9,14 +9,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // sets up board variables
   let board = [];
+  let gameOfLife;
   let game = {
     rows: 50,
     columns: 50,
     margin: 1,
     speed: 200, // in ms per gen
     density: 1.2,
-    pxWide: canvas.width,
-    pxHigh: canvas.height,
     cellColor: '#3b5998',
     background: 'rgb(250, 250, 250)',
     generations: 0,
@@ -25,36 +24,32 @@ document.addEventListener('DOMContentLoaded', () => {
   // variables for onscreen dot
   // adapted from http://cobwwweb.com/mutlicolored-dotted-grid-canvas
   let dot = {
-    width: ((game.pxWide - (2 * game.margin)) / game.columns) - game.margin,
-    height: ((game.pxHigh - (2 * game.margin)) / game.rows) - game.margin,
-    // diameter: this.isWider ? this.height : this.width,
-    // xMargin: this.isWider ? (game.pxWide - ((2 * game.margin) + (game.columns * this.diameter))) / game.columns : game.margin,
-    // yMargin: !(this.isWider) ? (game.pxHigh - ((2 * game.margin) + (game.rows * this.diameter))) / game.rows : game.margin,
-    // radius: Math.abs(this.diameter) * 0.5,
+    width: ((canvas.width - (2 * game.margin)) / game.columns) - game.margin,
+    height: ((canvas.height - (2 * game.margin)) / game.rows) - game.margin,
   };
 
 // // implementation of offscreen canvas is still shaky, but might speed up performance...
 // board.offscreenCanvas = document.createElement("canvas");
-// board.offscreenCanvas.width = game.pxHigh;
-// board.offscreenCanvas.height = game.pxWide;
+// board.offscreenCanvas.width = canvas.height;
+// board.offscreenCanvas.height = canvas.width;
 // board.offscreenContext = board.offscreenCanvas.getContext("2d");
 
   // adapted from http://cobwwweb.com/mutlicolored-dotted-grid-canvas
   // Because we don't know which direction (x vs. y) is the limiting sizing
   // factor, we'll calculate both first.
-  // dot.width = ((game.pxWide - (2 * game.margin)) / game.columns) - game.margin;
-  // dot.height = ((game.pxHigh - (2 * game.margin)) / game.rows) - game.margin;
+  // dot.width = ((canvas.width - (2 * game.margin)) / game.columns) - game.margin;
+  // dot.height = ((canvas.height - (2 * game.margin)) / game.rows) - game.margin;
   // Uses the limiting dimension to set the diameter.
   if( dot.width > dot.height )
   {
     dot.diameter = dot.height;
-    dot.xMargin = (game.pxWide - ((2 * game.margin) + (game.columns * dot.diameter))) / game.columns;
+    dot.xMargin = (canvas.width - ((2 * game.margin) + (game.columns * dot.diameter))) / game.columns;
     dot.yMargin = game.margin;
   }
   else
   { dot.diameter = dot.width;
     dot.xMargin = game.margin;
-    dot.yMargin = (game.pxHigh - ((2 * game.margin) + (game.rows * dot.diameter))) / game.rows;
+    dot.yMargin = (canvas.height - ((2 * game.margin) + (game.rows * dot.diameter))) / game.rows;
   }
   // Radius is still half of the diameter, because ... math.
   dot.radius = Math.abs(dot.diameter) * 0.5;
@@ -124,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function lifeGen() {
       clearDots();
       game.generations += 1;
-      document.querySelector('.gen').innerHTML = game.generations
+      document.querySelector('.gen').innerHTML = `Generation:<br>${game.generations}`;
       context.fillStyle = game.cellColor;
       let x = 0,
           y = -1,
@@ -171,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // overlays the board with a blank rectangle
   function clearDots() {
     context.fillStyle = 'rgba(250, 250, 250, 0.7)';
-    context.fillRect( 0, 0, game.pxWide, game.pxHigh);
+    context.fillRect( 0, 0, canvas.width, canvas.height);
   }
 
   // button handlers
@@ -259,7 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // toggles cell state on click and drag
   function dragCell(e){
-    if ((0 < e.clientX && e.clientX < game.pxWide) && (0 < e.clientY && e.clientY < game.pxHigh)) {
+    if ((0 < e.clientX && e.clientX < canvas.width) && (0 < e.clientY && e.clientY < canvas.height)) {
       let dragPos = new Cell(e.clientX, e.clientY);
       e.shiftKey ? dragPos.draw(0) : dragPos.draw(1)
     }
@@ -267,6 +262,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // sets the initial board state and speed
   initBoard();
-  let gameOfLife = setInterval(lifeGen, game.speed);
+  gameOfLife = setInterval(lifeGen, game.speed);
 
 });
