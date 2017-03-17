@@ -8,15 +8,17 @@ html, body {
 
 .control-box {
   position: fixed;
-  background: rgb(0, 172, 237);
+  background: rgb(175, 189, 212);
   transition: width .4s ease;
   width: 50px;
   height: 50px;
   overflow: hidden;
+  opacity: .7;
 }
 
 .control-box:hover {
   width: 400px;
+  opacity: 1;
 }
 
 .board {
@@ -36,10 +38,10 @@ button {
   display: inline-block;
   margin: 10px 0 10px 10px;
   transition: opacity .4s ease;
-  opacity: .8;
+  opacity: .9;
 }
 
-button:hover {
+button:not(.settings):hover {
   opacity: .6;
 }
 

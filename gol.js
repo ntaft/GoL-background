@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const context = canvas.getContext('2d');
   canvas.height = `${window.innerWidth}`;
   canvas.width = `${window.innerWidth}`;
-  context.globalAlpha=0.8;
+  // context.globalAlpha=0.8;
 
   // sets up board variables
   let board = [];
@@ -17,10 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
     density: 1.2,
     pxWide: canvas.width,
     pxHigh: canvas.height,
-    cellColor: '#FF4136',
+    cellColor: '#3b5998',
     background: 'rgb(250, 250, 250)',
     generations: 0,
   };
+
   // variables for onscreen dot
   // adapted from http://cobwwweb.com/mutlicolored-dotted-grid-canvas
   let dot = {
@@ -154,7 +155,6 @@ document.addEventListener('DOMContentLoaded', () => {
          return state;
        });
       });
-      // board.render(board.offscreenContext);
     }
 
   // draws each 'dot' - currently in the shape of a rectangle.
@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   // overlays the board with a blank rectangle
   function clearDots() {
-    context.fillStyle = game.background;
+    context.fillStyle = 'rgba(250, 250, 250, 0.7)';
     context.fillRect( 0, 0, game.pxWide, game.pxHigh);
   }
 
