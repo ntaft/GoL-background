@@ -21,7 +21,7 @@ Users can:
 - more user controls over variables (speed, grid size, seeding density, etc.)
 
 ### Acknowledgements
-- [http://cobwwweb.com/mutlicolored-dotted-grid-canvas] for canvas grid reference
+- http://cobwwweb.com/mutlicolored-dotted-grid-canvas for canvas grid reference
 
 
 
