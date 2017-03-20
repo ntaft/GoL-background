@@ -1,4 +1,4 @@
-##Game of Life interactive animation
+## Game of Life interactive animation
 
 Fully interactive background / foreground animation for websites created utilizing canvas; cell states follow the rules of [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway's_Game_of_Life). Cells are randomly seeded at the start of the animation. 
 
@@ -10,17 +10,17 @@ Users can:
 - Step to the next generation
 - Clear the board
 
-###Tech Utilized:
+### Tech Utilized:
 - HTML/CSS
 - Javascript
 - Canvas
 - Node & express (test server platform)
 
-###Future plans: 
+### Future plans: 
 - Pre-defined / user-selectable seeding patterns that produce interesting growth patterns.
 - more user controls over variables (speed, grid size, seeding density, etc.)
 
-###Acknowledgements
+### Acknowledgements
 - [http://cobwwweb.com/mutlicolored-dotted-grid-canvas] for canvas grid reference
 
 
